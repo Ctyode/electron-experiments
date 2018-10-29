@@ -3,22 +3,22 @@ import Application = PIXI.Application;
 
 class Main {
 
-	public init(): void {
+	public app: Application = new Application(innerWidth, innerHeight, {
+		backgroundColor : 0x000000
+	});
 
-		const app: Application = new Application(innerWidth, innerHeight, {
-			backgroundColor : 0x000000
-		});
+	public init(): void {
+		const app: Application = this.app;
+		const cursor: Cursor = new Cursor();
 		const mousePosition: PIXI.Point = app.renderer.plugins.interaction.mouse.global;
-		const cursor: PIXI.Sprite = PIXI.Sprite.fromImage('/Users/flamie/WebstormProjects/experiments/images/bunny.png');
+		const screenWidth: number = app.screen.width;
+		const screenHeight: number = app.screen.height;
 
 		document.body.appendChild(app.view);
+		cursor.init(mousePosition, screenWidth, screenHeight);
 		app.ticker.add(loop);
 
-		app.stage.addChild(cursor);
-
-		cursor.anchor.set(0.5);
-		cursor.x = app.screen.width / 2;
-		cursor.y = app.screen.height / 2;
+		app.stage.addChild(cursor.getCursor());
 
 		function resize(): void {
 			app.renderer.view.style.position = 'absolute';
@@ -28,9 +28,7 @@ class Main {
 		}
 
 		function loop(deltaTime: number): void {
-			cursor.x = mousePosition.x;
-			cursor.y = mousePosition.y;
-			cursor.rotation += 0.1 * deltaTime;
+			cursor.loop(deltaTime);
 		}
 
 		function setColor(): void {
@@ -48,6 +46,33 @@ class Main {
 		resize();
 		window.addEventListener('resize', resize);
 
+	}
+
+}
+
+class Cursor {
+
+	private cursor: PIXI.Sprite = PIXI.Sprite.fromImage('/Users/flamie/WebstormProjects/experiments/images/bunny.png');
+	private mousePosition: PIXI.Point;
+
+	public init(mousePosition: PIXI.Point, screenWidth: number, screenHeight: number): void {
+		this.mousePosition = mousePosition;
+
+		this.cursor.anchor.set(0.5);
+		this.cursor.x = screenWidth / 2;
+		this.cursor.y = screenHeight / 2;
+	}
+
+	public loop(deltaTime: number): void {
+		console.log('zhopa');
+
+		this.cursor.x = this.mousePosition.x;
+		this.cursor.y = this.mousePosition.y;
+		this.cursor.rotation += 0.1 * deltaTime;
+	}
+
+	public getCursor(): PIXI.Sprite {
+		return this.cursor;
 	}
 
 }

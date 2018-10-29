@@ -68,6 +68,7 @@
 			"property-declaration",
 			"variable-declaration"
 		],
-		"no-inferrable-types": [false]
+		"no-inferrable-types": [false],
+		"max-classes-per-file": [false]
 	}
 }
